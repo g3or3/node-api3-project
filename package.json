@@ -12,6 +12,7 @@
         "url": "git+https://github.com/LambdaSchool/node-api3-project.git"
     },
     "dependencies": {
+        "dotenv": "^9.0.0",
         "express": "^4.17.1",
         "express-handlebars": "^5.3.1",
         "joi": "^17.4.0",
