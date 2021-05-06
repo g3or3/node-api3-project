@@ -3,19 +3,27 @@ const Joi = require("joi");
 const userSchema = Joi.object({
 	name: Joi.string()
 		.trim()
-		.alphanum()
 		.min(3)
 		.max(30)
-		.required(),
+		.required()
+		.messages({
+			"any.required": `"missing required name`,
+		}),
 });
 
 const postSchema = Joi.object({
 	text: Joi.string()
 		.trim()
 		.alphanum()
-		.min(5)
+		.min(3)
 		.max(100)
-		.required(),
+		.required()
+		.messages({
+			"any.required": `"missing required text`,
+		}),
 });
 
-module.exports = { userSchema, postSchema };
+module.exports = {
+	userSchema,
+	postSchema,
+};

@@ -35,8 +35,8 @@ router.post("/", logger, validateUser, async (req, res, next) => {
 
 router.put("/:id", validateUserId, validateUser, async (req, res, next) => {
 	try {
-		await Users.update(req.params.id, req.body);
-		res.json(req.body);
+		await Users.update(req.user.id, req.body);
+		res.json({ id: req.user.id, ...req.body });
 	} catch (err) {
 		next(err);
 	}
@@ -61,7 +61,7 @@ router.get("/:id/posts", validateUserId, async (req, res, next) => {
 
 router.post("/:id/posts", validateUserId, validatePost, async (req, res, next) => {
 	try {
-		const newPost = { user_id: req.params.id, ...req.body.value };
+		const newPost = { user_id: req.params.id, ...req.body };
 		res.json(await Posts.insert(newPost));
 	} catch (err) {
 		next(err);

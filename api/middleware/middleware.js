@@ -1,7 +1,5 @@
 const Users = require("../users/users-model");
 
-const Posts = require("../posts/posts-model");
-
 const { userSchema, postSchema } = require("./validationSchema");
 
 function logger(req, res, next) {
@@ -39,7 +37,7 @@ async function validateUser(req, res, next) {
 
 async function validatePost(req, res, next) {
 	try {
-		req.body = await postSchema.validate(req.body, {
+		req.body = await postSchema.validateAsync(req.body, {
 			stripUnknown: true,
 		});
 		next();
