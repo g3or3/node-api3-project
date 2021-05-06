@@ -17,10 +17,20 @@ router.use(logger);
 
 router.get("/", async (req, res, next) => {
 	try {
-		res.json(await Users.get());
+		res.render("users", {
+			users: await Users.get(),
+		});
 	} catch (err) {
 		next(err);
 	}
+});
+
+router.get("/update-user/:id", async (req, res) => {
+	const user = await Users.getById(req.params.id);
+	res.render("update", {
+		id: req.params.id,
+		userName: user.name,
+	});
 });
 
 router.get("/:id", validateUserId, (req, res) => {
@@ -29,7 +39,10 @@ router.get("/:id", validateUserId, (req, res) => {
 
 router.post("/", validateUser, async (req, res, next) => {
 	try {
-		res.json(await Users.insert(req.body));
+		await Users.insert(req.body);
+		res.render("users", {
+			users: await Users.get(),
+		});
 	} catch (err) {
 		next(err);
 	}
@@ -38,7 +51,9 @@ router.post("/", validateUser, async (req, res, next) => {
 router.put("/:id", validateUserId, validateUser, async (req, res, next) => {
 	try {
 		await Users.update(req.user.id, req.body);
-		res.json({ id: req.user.id, ...req.body });
+		res.render("users", {
+			users: await Users.get(),
+		});
 	} catch (err) {
 		next(err);
 	}
@@ -47,7 +62,9 @@ router.put("/:id", validateUserId, validateUser, async (req, res, next) => {
 router.delete("/:id", validateUserId, async (req, res, next) => {
 	try {
 		await Users.remove(req.params.id);
-		res.json(req.user);
+		res.render("users", {
+			users: await Users.get(),
+		});
 	} catch (err) {
 		next(err);
 	}
@@ -55,7 +72,10 @@ router.delete("/:id", validateUserId, async (req, res, next) => {
 
 router.get("/:id/posts", validateUserId, async (req, res, next) => {
 	try {
-		res.json(await Users.getUserPosts(req.params.id));
+		res.render("posts", {
+			id: req.params.id,
+			posts: await Users.getUserPosts(req.params.id),
+		});
 	} catch (err) {
 		next(err);
 	}
@@ -64,7 +84,11 @@ router.get("/:id/posts", validateUserId, async (req, res, next) => {
 router.post("/:id/posts", validateUserId, validatePost, async (req, res, next) => {
 	try {
 		const newPost = { user_id: req.params.id, ...req.body };
-		res.json(await Posts.insert(newPost));
+		await Posts.insert(newPost);
+		res.render("posts", {
+			id: req.params.id,
+			posts: await Users.getUserPosts(req.params.id),
+		});
 	} catch (err) {
 		next(err);
 	}
