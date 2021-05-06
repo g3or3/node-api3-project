@@ -42,7 +42,7 @@ async function validatePost(req, res, next) {
 		});
 		next();
 	} catch (err) {
-		next({ status: 400, message: err.message });
+		next({ status: 400, message: err.details[0].message });
 	}
 }
 
