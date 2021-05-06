@@ -5,15 +5,17 @@ const Users = require("./users-model");
 const Posts = require("../posts/posts-model");
 
 const {
-	logger,
 	validateUserId,
 	validateUser,
 	validatePost,
+	logger,
 } = require("../middleware/middleware");
 
 const router = express.Router();
 
-router.get("/", logger, async (req, res, next) => {
+router.use(logger);
+
+router.get("/", async (req, res, next) => {
 	try {
 		res.json(await Users.get());
 	} catch (err) {
@@ -21,11 +23,11 @@ router.get("/", logger, async (req, res, next) => {
 	}
 });
 
-router.get("/:id", logger, validateUserId, (req, res) => {
+router.get("/:id", validateUserId, (req, res) => {
 	res.json(req.user);
 });
 
-router.post("/", logger, validateUser, async (req, res, next) => {
+router.post("/", validateUser, async (req, res, next) => {
 	try {
 		res.json(await Users.insert(req.body));
 	} catch (err) {
