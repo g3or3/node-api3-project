@@ -1,0 +1,9 @@
+<h4 class='mb-4'>{{userName}}</h4>
+<form method="POST" action='/api/users/{{this.id}}?_method=PUT'>
+    <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" name="name" class="form-control mb-4">
+  </div>
+  <input type="submit" value="Update User" class="btn btn-primary btn-block">
+  <a href='/api/users' class="btn btn-secondary btn-block">Go Back</a>
+</form>
