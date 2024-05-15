@@ -1,17 +1,54 @@
+const Users = require("../users/users-model");
+
+const { userSchema, postSchema } = require("./validationSchema");
+
 function logger(req, res, next) {
-  // DO YOUR MAGIC
+	console.log(`${req.method}, ${req.baseUrl}, ${new Date().toUTCString()}`);
+	next();
 }
 
-function validateUserId(req, res, next) {
-  // DO YOUR MAGIC
+async function validateUserId(req, res, next) {
+	try {
+		const user = await Users.getById(req.params.id);
+		if (!user) {
+			next({
+				status: 404,
+				message: `User with ID ${req.params.id} not found`,
+			});
+		} else {
+			req.user = user;
+			next();
+		}
+	} catch (err) {
+		next(err);
+	}
 }
 
-function validateUser(req, res, next) {
-  // DO YOUR MAGIC
+async function validateUser(req, res, next) {
+	try {
+		req.body = await userSchema.validateAsync(req.body, {
+			stripUnknown: true,
+		});
+		next();
+	} catch (err) {
+		next({ status: 400, message: err.details[0].message });
+	}
 }
 
-function validatePost(req, res, next) {
-  // DO YOUR MAGIC
+async function validatePost(req, res, next) {
+	try {
+		req.body = await postSchema.validateAsync(req.body, {
+			stripUnknown: true,
+		});
+		next();
+	} catch (err) {
+		next({ status: 400, message: err.details[0].message });
+	}
 }
 
-// do not forget to expose these functions to other modules
+module.exports = {
+	logger,
+	validateUserId,
+	validateUser,
+	validatePost,
+};
